@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    env_file: .env
+    restart: unless-stopped
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB} || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+
+  api-server:
+    build: ./backend
+    env_file: .env
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: sh -c "npm run seed && node dist/index.js"
+    environment:
+      - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    labels:
+      - "traefik.enable=false"
+
+  vue-app:
+    build: ./frontend
+    depends_on:
+      - api-server
+    labels:
+      - "traefik.enable=true"
+      - 'traefik.http.routers.album.rule=Host(`TU_DOMINIO`)'
+      - "traefik.http.routers.album.entrypoints=websecure"
+      - "traefik.http.routers.album.tls.certresolver=letsencrypt"
+      - "traefik.http.services.album.loadbalancer.server.port=80"
+
+volumes:
+  pgdata:
+
+networks:
+  default:
+    name: dokploy-network
+    driver: bridge
+
+# Instrucciones de despliegue en Dokploy:
+# - En Dokploy: New Project → Compose → pegar URL del repo o subir archivos
+# - Copiar .env.example a .env y rellenar valores (POSTGRES_USER, POSTGRES_PASSWORD, POSTGRES_DB, VITE_API_URL, etc.)
+# - Reemplazar TU_DOMINIO por el dominio real en la etiqueta Traefik
+# - Deploy
