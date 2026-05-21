@@ -20,19 +20,25 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    command: sh -c "npm run seed && node dist/index.js"
+    command: sh -c "node dist/seed.js && node dist/index.js"
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
     labels:
       - "traefik.enable=false"
 
   vue-app:
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        VITE_API_URL: /api
+    env_file: .env
+    environment:
+      - VITE_API_URL=/api
     depends_on:
       - api-server
     labels:
       - "traefik.enable=true"
-      - 'traefik.http.routers.album.rule=Host(`TU_DOMINIO`)'
+      - 'traefik.http.routers.album.rule=Host(`album.abadgroup.tech`)'
       - "traefik.http.routers.album.entrypoints=websecure"
       - "traefik.http.routers.album.tls.certresolver=letsencrypt"
       - "traefik.http.services.album.loadbalancer.server.port=80"
