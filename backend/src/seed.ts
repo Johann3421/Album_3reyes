@@ -22,7 +22,7 @@ async function run() {
 
     const insert = async (num: string, category: string, got: boolean) => {
       await pool.query(
-        'INSERT INTO stickers (number, category, got) VALUES ($1, $2, $3) ON CONFLICT DO NOTHING',
+        'INSERT INTO stickers (number, category, got) VALUES ($1, $2, $3) ON CONFLICT (number, category) DO UPDATE SET got = EXCLUDED.got',
         [num, category, got]
       );
     };
