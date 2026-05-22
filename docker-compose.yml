@@ -47,9 +47,10 @@ volumes:
   pgdata:
 
 networks:
+networks:
   default:
+    external: true
     name: dokploy-network
-    driver: bridge
 
 # Instrucciones de despliegue en Dokploy:
 # - En Dokploy: New Project → Compose → pegar URL del repo o subir archivos

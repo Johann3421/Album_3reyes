@@ -2,8 +2,12 @@ FROM node:20-alpine AS builder
 WORKDIR /usr/src/app
 
 COPY package.json package-lock.json* ./
-# prefer npm ci in CI/build images and allow lifecycle scripts to run as root
-RUN npm ci --unsafe-perm --no-audit --no-fund || npm install --unsafe-perm
+# Install deps: prefer npm ci when package-lock.json exists, fall back to npm install
+RUN if [ -f package-lock.json ]; then \
+			npm ci --unsafe-perm --no-audit --no-fund; \
+		else \
+			npm install --unsafe-perm --no-audit --no-fund; \
+		fi
 
 # Allow build-time override of API base URL
 ARG VITE_API_URL=/api
