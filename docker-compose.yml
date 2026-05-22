@@ -17,6 +17,7 @@ services:
   api-server:
     build: ./backend
     env_file: .env
+    restart: unless-stopped
     depends_on:
       postgres:
         condition: service_healthy
@@ -30,10 +31,10 @@ services:
     build:
       context: ./frontend
       args:
-        VITE_API_URL: /api
+        VITE_API_URL: ''
     env_file: .env
     environment:
-      - VITE_API_URL=/api
+      - VITE_API_URL=''
     depends_on:
       - api-server
     labels:

@@ -12,7 +12,9 @@ export type Summary = {
   missing: number;
 };
 
-const apiBase = (import.meta.env.VITE_API_URL as string) || 'http://localhost:3000';
+// Use relative URLs in production (nginx proxies /api/* → backend).
+// In Vite dev server the vite.config.ts proxy handles /api/* → localhost:3000.
+const apiBase = '';
 
 async function handleRes<T>(res: Response) {
   if (!res.ok) {
