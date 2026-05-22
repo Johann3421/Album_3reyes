@@ -47,7 +47,6 @@ volumes:
   pgdata:
 
 networks:
-networks:
   default:
     external: true
     name: dokploy-network
