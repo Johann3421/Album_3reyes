@@ -1,22 +1,24 @@
 <template>
   <div id="app">
-    <header class="app-header">
-      <div class="title">Álbum de Figuritas</div>
-      <div class="progress">
-        <div class="progress-bar">
-          <div class="progress-fill" :style="{ width: progressPercent + '%' }"></div>
+    <div class="app-wrapper">
+      <header class="app-header">
+        <div class="title">Álbum de Figuritas</div>
+        <div class="progress">
+          <div class="progress-bar">
+            <div class="progress-fill" :style="{ width: progressPercent + '%' }"></div>
+          </div>
+          <div class="progress-text">{{ totalGot }} / {{ totalCount }}</div>
         </div>
-        <div class="progress-text">{{ totalGot }} / {{ totalCount }}</div>
-      </div>
-    </header>
+      </header>
 
-    <nav class="tabs">
-      <button v-for="tab in tabs" :key="tab.key" :class="{ active: activeTab === tab.key }" @click="activeTab = tab.key">{{ tab.label }}</button>
-    </nav>
+      <nav class="tabs">
+        <button v-for="tab in tabs" :key="tab.key" :class="{ active: activeTab === tab.key }" @click="activeTab = tab.key">{{ tab.label }}</button>
+      </nav>
 
-    <main class="content">
-      <StickerGrid :category="activeTab" />
-    </main>
+      <main class="content">
+        <StickerGrid :category="activeTab" />
+      </main>
+    </div>
   </div>
 </template>
 
@@ -77,12 +79,15 @@ onMounted(async () => {
 <style>
 :root {
   --color-got: #27ae60;
-  --color-missing: #cfcfcf;
-  --color-reg: #f7f3e9;
-  --color-esp: #fff4e6;
-  --color-troq: #eef9ff;
+  --color-missing: #f1f3f5;
+  --color-reg: #fffaf0;
+  --color-esp: #fff6fb;
+  --color-troq: #f0fbff;
   --text: #222;
-  --bg: #ffffff;
+  --bg: #f7f8fa;
+  --muted: #6b7280;
+  --card-bg: #ffffff;
+  --accent: #2563eb;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -90,27 +95,39 @@ onMounted(async () => {
     --color-got: #2ecc71;
     --color-missing: #3a3a3a;
     --text: #eaeaea;
-    --bg: #0f0f11;
+    --bg: #0b1220;
+    --card-bg: #071026;
   }
 }
 
 * { box-sizing: border-box; }
-body { margin: 0; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color: var(--text); background: var(--bg); }
 
-.app-header { display:flex; align-items:center; justify-content:space-between; padding:16px; gap:16px; }
-.title { font-size:1.25rem; font-weight:700 }
-.progress { display:flex; align-items:center; gap:12px; }
-.progress-bar { width:180px; height:10px; background:rgba(0,0,0,0.08); border-radius:999px; overflow:hidden }
-.progress-fill { height:100%; background:var(--color-got); transition:width .3s ease }
-.progress-text { font-size:.9rem }
+body { margin: 0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; color: var(--text); background: linear-gradient(180deg, var(--bg) 0%, #eef2ff 100%); }
 
-.tabs { display:flex; gap:8px; padding:8px 16px; }
-.tabs button { background:transparent; border:1px solid rgba(0,0,0,0.06); padding:8px 12px; border-radius:8px; cursor:pointer }
-.tabs button.active { background:var(--color-got); color:#fff; border-color:transparent }
+.app-wrapper { max-width:1100px; margin:24px auto; padding:16px; }
+.app-header { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; gap:16px; background:var(--card-bg); border-radius:12px; box-shadow:0 4px 14px rgba(16,24,40,0.06); }
+.title { font-size:1.3rem; font-weight:700 }
+.progress { display:flex; align-items:center; gap:12px }
+.progress-bar { width:240px; height:12px; background:rgba(0,0,0,0.06); border-radius:999px; overflow:hidden }
+.progress-fill { height:100%; background:var(--accent); transition:width .35s cubic-bezier(.2,.9,.2,1) }
+.progress-text { font-size:.95rem; color:var(--muted) }
 
-.content { padding:16px }
+.tabs { display:flex; gap:10px; padding:12px 0; }
+.tabs button { background:transparent; border:1px solid rgba(16,24,40,0.06); padding:10px 14px; border-radius:999px; cursor:pointer; color:var(--muted); font-weight:600 }
+.tabs button.active { background:var(--accent); color:#fff; border-color:transparent; box-shadow:0 6px 18px rgba(37,99,235,0.12) }
+
+.content { padding:16px; background:transparent }
 
 /* Global grid style used by StickerGrid */
-.sticker-grid { display:grid; gap:10px; grid-template-columns: repeat(auto-fill, minmax(64px, 1fr)); }
+.sticker-grid { display:grid; gap:12px; grid-template-columns: repeat(auto-fill, minmax(72px, 1fr)); }
+
+.section { margin-bottom:18px; background:var(--card-bg); padding:12px; border-radius:10px; box-shadow:0 6px 18px rgba(16,24,40,0.04) }
+.section-header { display:flex; align-items:center; justify-content:space-between; margin-bottom:10px }
+.section-title { font-weight:800 }
+.section-badge { padding:6px 10px; border-radius:999px; font-weight:700 }
+.badge-reg { background:#fff5e6; color:#9a6b1b }
+.badge-esp { background:#fff0f6; color:#8b3a5b }
+.badge-troq { background:#eff8ff; color:#055160 }
+
 
 </style>

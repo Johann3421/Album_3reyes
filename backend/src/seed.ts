@@ -31,9 +31,10 @@ async function run() {
 
     const regularGotFalse = ['9','12','13','34','40','41','45','46','48','56','59','82','85','90','91','94','102','115','177','181','182','196','199','234','263','265','267','268','273','275','276','277','313','315','317','327','340','343','372','397','417','418','429','480','488','516','518','521','529','539'];
 
-    const especialesGotTrue = ['E3','E4','E6','E21','E22','E25','E29','E33','E35','E37','E42','E43','E46','E50','E54','E55','E58','E62','E65','E66'];
+    const especialesGotTrue = ['E3','E4','E6','E21','E22','E25','E29','E33','E35','E37','E42','E43','E46','E50','E54','E55','E58','E62','E65','E66','E2','E39'];
 
-    const especialesGotFalse = ['E39','E67'];
+    // Add letter stickers and remaining especiales as missing by default
+    const especialesGotFalse = ['E','F','E67'];
 
     const troqueladosGotTrue = ['T-10','T-19','T-35','T-38','T-41','T-43','T-45','T-46','T-47','T-48'];
 
