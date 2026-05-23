@@ -21,9 +21,16 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-    command: sh -c "node dist/seed.js && node dist/index.js"
+    # Use ; not && so the server always starts even if seed fails
+    command: sh -c "node dist/seed.js; node dist/index.js"
     environment:
       - DATABASE_URL=postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:3000/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
     labels:
       - "traefik.enable=false"
 
@@ -36,7 +43,8 @@ services:
     environment:
       - VITE_API_URL=''
     depends_on:
-      - api-server
+      api-server:
+        condition: service_healthy
     labels:
       - "traefik.enable=true"
       - 'traefik.http.routers.album.rule=Host(`album.abadgroup.tech`)'
