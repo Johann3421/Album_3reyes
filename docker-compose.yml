@@ -31,6 +31,9 @@ services:
       timeout: 5s
       retries: 6
       start_period: 15s
+    networks:
+      - default
+      - app-net
     labels:
       - "traefik.enable=false"
 
@@ -45,6 +48,9 @@ services:
     depends_on:
       api-server:
         condition: service_healthy
+    networks:
+      - default
+      - app-net
     labels:
       - "traefik.enable=true"
       - 'traefik.http.routers.album.rule=Host(`album.abadgroup.tech`)'
@@ -59,6 +65,10 @@ networks:
   default:
     external: true
     name: dokploy-network
+  # Dedicated bridge network for vue-app ↔ api-server communication.
+  # Avoids routing issues with dokploy-network (overlay) for internal traffic.
+  app-net:
+    driver: bridge
 
 # Instrucciones de despliegue en Dokploy:
 # - En Dokploy: New Project → Compose → pegar URL del repo o subir archivos
